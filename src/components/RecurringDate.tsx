@@ -1,4 +1,5 @@
-import {Box, Flex, Grid, Select, Stack, Text} from '@sanity/ui'
+import {RichDate} from '@sanity/rich-date-input'
+import {Box, Card, Flex, Grid, Select, Stack, Text} from '@sanity/ui'
 import {upperFirst} from 'lodash'
 import React, {useCallback, useState} from 'react'
 import {rrulestr} from 'rrule'
@@ -96,11 +97,11 @@ export function RecurringDates(props: RecurringDatesProps) {
   } else {
     // we need to explicitly set the schemaType to datetime
     if (startDateMember?.kind == 'field') {
-      startDateMember.field.schemaType.name = 'datetime'
+      startDateMember.field.schemaType.name = 'richDate'
     }
 
     if (endDateMember?.kind == 'field') {
-      endDateMember.field.schemaType.name = 'datetime'
+      endDateMember.field.schemaType.name = 'richDate'
     }
   }
 
@@ -108,58 +109,62 @@ export function RecurringDates(props: RecurringDatesProps) {
   const hasEndDate = currentValue && currentValue.endDate
 
   return (
-    <Stack space={3}>
-      <Grid columns={hideEndDate ? 1 : 2} gap={3}>
-        {hasEndDate && hideEndDate && <RemoveEndDate title={title} onChange={onChange} />}
-        <Flex align="flex-end" gap={2}>
-          <Box flex={1}>
-            {startDateMember && <ObjectInputMember member={startDateMember} {...renderProps} />}
-          </Box>
-        </Flex>
-        {!hideEndDate && (
+    <Card>
+      <Stack space={3}>
+        <Grid columns={hideEndDate ? 1 : 1} gap={3}>
+          {hasEndDate && hideEndDate && <RemoveEndDate title={title} onChange={onChange} />}
           <Flex align="flex-end" gap={2}>
             <Box flex={1}>
-              {endDateMember && <ObjectInputMember member={endDateMember} {...renderProps} />}
+              {startDateMember && <ObjectInputMember member={startDateMember} {...renderProps} />}
             </Box>
           </Flex>
-        )}
-      </Grid>
-      {invalidRecurrences ? (
-        <Feedback tone="critical">
-          <Text size={1}>
-            <strong>Error:</strong> An invalid RRULE string was provided in the{' '}
-            <code>defaultRecurrences</code> array. Check plugin configuration.
-          </Text>
-        </Feedback>
-      ) : (
-        <Select onChange={handleChange} value={currentValue?.rrule}>
-          <option value="">Doesn&#39;t repeat</option>
-          {availableRecurrences.map((recurrence) => {
-            if (!recurrence) {
-              return null
-            }
-            const rule = rrulestr(recurrence)
+          {!hideEndDate && (
+            <Flex align="flex-end" gap={2}>
+              <Box flex={1}>
+                {endDateMember && <ObjectInputMember member={endDateMember} {...renderProps} />}
+              </Box>
+            </Flex>
+          )}
+        </Grid>
+        {invalidRecurrences ? (
+          <Feedback tone="critical">
+            <Text size={1}>
+              <strong>Error:</strong> An invalid RRULE string was provided in the{' '}
+              <code>defaultRecurrences</code> array. Check plugin configuration.
+            </Text>
+          </Feedback>
+        ) : (
+          <Select onChange={handleChange} value={currentValue?.rrule}>
+            <option value="">Doesn&#39;t repeat</option>
+            {availableRecurrences.map((recurrence) => {
+              if (!recurrence) {
+                return null
+              }
+              const rule = rrulestr(recurrence)
 
-            return (
-              <option key={recurrence} value={recurrence}>
-                {upperFirst(rule.toText())}
-              </option>
-            )
-          })}
-          {!hideCustom && <option value="custom">Custom...</option>}
-        </Select>
-      )}
-      {rruleMember && <ObjectInputMember member={rruleMember} {...renderProps} />}
-      <CustomRule
-        open={open}
-        onClose={onClose}
-        onChange={onChange}
-        initialValue={currentValue?.rrule}
-        startDate={
-          startDateMember?.kind == 'field' ? (startDateMember?.field?.value as string) : undefined
-        }
-        dateTimeOptions={dateTimeOptions}
-      />
-    </Stack>
+              return (
+                <option key={recurrence} value={recurrence}>
+                  {upperFirst(rule.toText())}
+                </option>
+              )
+            })}
+            {!hideCustom && <option value="custom">Custom...</option>}
+          </Select>
+        )}
+        {rruleMember && <ObjectInputMember member={rruleMember} {...renderProps} />}
+        <CustomRule
+          open={open}
+          onClose={onClose}
+          onChange={onChange}
+          initialValue={currentValue?.rrule}
+          startDate={
+            startDateMember?.kind == 'field'
+              ? ((startDateMember?.field?.value as RichDate).utc as string)
+              : undefined
+          }
+          dateTimeOptions={dateTimeOptions}
+        />
+      </Stack>
+    </Card>
   )
 }

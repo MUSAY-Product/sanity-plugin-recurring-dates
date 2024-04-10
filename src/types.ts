@@ -1,3 +1,4 @@
+import type {RichDate} from '@sanity/rich-date-input'
 import type {DatetimeOptions, ObjectDefinition} from 'sanity'
 
 export interface PluginConfig {
@@ -29,6 +30,6 @@ declare module 'sanity' {
 
 export interface RecurringDate {
   rrule: string
-  startDate: string
-  endDate: string
+  startDate: RichDate
+  endDate: RichDate
 }
