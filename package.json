@@ -88,6 +88,11 @@
     "@sanity/icons": "^2",
     "@sanity/rich-date-input": "^3.0.1"
   },
+  "peerDependenciesMeta": {
+    "@sanity/rich-date-input": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": ">=14"
   }

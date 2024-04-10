@@ -6,7 +6,7 @@ export interface PluginConfig {
   hideEndDate?: boolean
   hideCustom?: boolean
   dateTimeOptions?: DatetimeOptions
-  dateOnly?: boolean
+  dateInputType: 'date' | 'datetime' | 'richDate'
 }
 
 export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
@@ -30,6 +30,6 @@ declare module 'sanity' {
 
 export interface RecurringDate {
   rrule: string
-  startDate: RichDate
-  endDate: RichDate
+  startDate: RichDate | string
+  endDate: RichDate | string
 }

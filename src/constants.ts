@@ -9,6 +9,7 @@ const DEFAULT_RECURRENCES = [
 
 export const DEFAULT_CONFIG: WithRequiredProperty<PluginConfig, 'defaultRecurrences'> = {
   defaultRecurrences: DEFAULT_RECURRENCES,
+  dateInputType: 'datetime',
 }
 
 export const MONTHS = [

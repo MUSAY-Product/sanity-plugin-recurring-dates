@@ -69,8 +69,10 @@ export default defineConfig({
         timeStep: 15,
       },
 
-      // Changes the date picker to date only, no time
-      dateOnly: true, // defaults to false
+      // Changes the date picker to date only, no time or rich date input field
+      // rich date input https://github.com/sanity-io/rich-date-input
+      // Install rich-date-input lib before enabling this setting, as it is marked as an optional peer dependency.
+      dateInputType: 'richDate', // defaults to datetime
     }),
   ],
 })
@@ -106,8 +108,10 @@ defineField({
       timeStep: 15,
     },
 
-    // Changes the date picker to date only, no time
-    dateOnly: true, // defaults to false
+    // Changes the date picker to date only, no time or rich date input field
+    // rich date input https://github.com/sanity-io/rich-date-input
+    // Install rich-date-input lib before enabling this setting, as it is marked as an optional peer dependency.
+    dateInputType: 'richDate', // defaults to datetime
   },
 })
 ```

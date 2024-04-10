@@ -22,7 +22,7 @@ type RecurringDateObjectSchemaType = Omit<ObjectSchemaType, 'options'> & {
 export function RecurringDates(props: RecurringDatesProps) {
   const {onChange, members, value: currentValue, schemaType, pluginConfig} = props
   const {options, title}: RecurringDateObjectSchemaType = schemaType
-  const {defaultRecurrences, hideEndDate, hideCustom, dateTimeOptions, dateOnly} = {
+  const {defaultRecurrences, hideEndDate, hideCustom, dateTimeOptions, dateInputType} = {
     ...pluginConfig,
     ...options,
   }
@@ -86,27 +86,28 @@ export function RecurringDates(props: RecurringDatesProps) {
     }
   }
 
-  if (dateOnly === true) {
-    if (startDateMember?.kind == 'field') {
-      startDateMember.field.schemaType.name = 'date'
-    }
+  // we need to explicitly set the schemaType to datetime/richDate
+  if (startDateMember?.kind == 'field') {
+    startDateMember.field.schemaType.name = dateInputType ?? 'datetime'
+  }
 
-    if (endDateMember?.kind == 'field') {
-      endDateMember.field.schemaType.name = 'date'
-    }
-  } else {
-    // we need to explicitly set the schemaType to datetime
-    if (startDateMember?.kind == 'field') {
-      startDateMember.field.schemaType.name = 'richDate'
-    }
-
-    if (endDateMember?.kind == 'field') {
-      endDateMember.field.schemaType.name = 'richDate'
-    }
+  if (endDateMember?.kind == 'field') {
+    endDateMember.field.schemaType.name = dateInputType ?? 'datetime'
   }
 
   // Do we have an end date set for this field?
   const hasEndDate = currentValue && currentValue.endDate
+  let startDateString
+
+  if (startDateMember?.kind === 'field') {
+    const startDateValue = startDateMember?.field?.value
+
+    if (startDateValue && Object.hasOwn(startDateValue as RichDate, 'utc')) {
+      startDateString = (startDateValue as RichDate).utc
+    } else {
+      startDateString = startDateValue as string
+    }
+  }
 
   return (
     <Card>
@@ -157,11 +158,7 @@ export function RecurringDates(props: RecurringDatesProps) {
           onClose={onClose}
           onChange={onChange}
           initialValue={currentValue?.rrule}
-          startDate={
-            startDateMember?.kind == 'field'
-              ? ((startDateMember?.field?.value as RichDate).utc as string)
-              : undefined
-          }
+          startDate={startDateString}
           dateTimeOptions={dateTimeOptions}
         />
       </Stack>
