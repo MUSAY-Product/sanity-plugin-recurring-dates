@@ -46,7 +46,9 @@ export default (config: WithRequiredProperty<PluginConfig, 'defaultRecurrences'>
       },
       prepare({startDate}) {
         return {
-          title: new Date(startDate?.utc).toLocaleString(),
+          title: new Date(
+            dateInputType === 'richDate' ? startDate?.utc : startDate,
+          ).toLocaleString(),
         }
       },
     },
