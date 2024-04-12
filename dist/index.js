@@ -9300,7 +9300,7 @@ var recurringDateSchema = config => {
           startDate
         } = _ref10;
         return {
-          title: new Date(startDate == null ? void 0 : startDate.utc).toLocaleString()
+          title: new Date(dateInputType === "richDate" ? startDate == null ? void 0 : startDate.utc : startDate).toLocaleString()
         };
       }
     }
